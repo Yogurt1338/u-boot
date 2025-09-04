@@ -30,3 +30,78 @@
 		bootph-pre-ram;
 	};
 };
+
+/*
+ * In SPL, avoid 1.8V signaling switch on SDMMC to prevent
+ * "Card did not respond to voltage select!" timeouts when
+ * regulator switching isn't available that early. Fall back
+ * to SD High Speed (3.3V).
+ */
+&sdmmc {
+	no-1-8-v;
+	max-frequency = <50000000>;
+};
+
+&sdhci { 
+	u-boot,dm-spl; 
+	/* Keep SPL in legacy HS to avoid sensitive voltage switching */
+	cap-mmc-highspeed;
+	non-removable;
+	disable-wp;
+	disable-cqe;
+	max-frequency = <52000000>;
+	mmc-hs200-1_8v;
+	mmc-hs400-1_8v;
+	bus-width = <8>;
+};
+
+&i2c1 {
+	u-boot,dm-spl;
+};
+
+/* Ensure PMIC on SPI2 is visible to SPL so regulators are usable */
+&spi2 {
+	u-boot,dm-spl;
+	bootph-pre-ram;
+	status = "okay";
+
+	pmic@0 {
+		bootph-pre-ram;
+		u-boot,dm-spl;
+	};
+};
+
+&vcc_3v3_s3 {
+	u-boot,dm-spl;
+};
+
+&vcc_1v8_s3 {
+	u-boot,dm-spl;
+};
+
+&vcc_3v3_sd_s0 {
+	u-boot,dm-spl;
+	bootph-pre-ram;
+};
+
+&vccio_sd_s0 {
+	u-boot,dm-spl;
+	bootph-pre-ram;
+};
+
+&spi0 {
+	status = "disabled"; /* shrink SPL */
+};
+
+/* Make sure SPI2 and PMIC pin groups are included in SPL */
+&spi2m2_pins {
+	bootph-all;
+};
+
+&spi2m2_cs0 {
+	bootph-all;
+};
+
+&pmic_pins {
+	bootph-all;
+};
