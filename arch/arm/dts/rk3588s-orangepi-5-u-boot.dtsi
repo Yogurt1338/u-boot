@@ -4,7 +4,17 @@
 
 / {
 	chosen {
-		u-boot,spl-boot-order = "same-as-spl", &sdmmc;
+		u-boot,spl-boot-order = &sdmmc, &sdhci;
+	};
+};
+
+/ {
+	aliases {
+		/* Note: These aliases are for SPL only.
+		 * mmc@fe2c0000: 0 (sdmmc/SD)
+		 * mmc@fe2e0000: 1 (sdhci/eMMC)
+		 */
+		mmc0 = &sdmmc; mmc1 = &sdhci;
 	};
 };
 

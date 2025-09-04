@@ -283,6 +283,20 @@
 	status = "okay";
 };
 
+&sdhci {
+    bus-width = <8>;
+    mmc-hs200-1_8v;
+    mmc-hs400-1_8v;
+	mmc-hs400-enhanced-strobe;
+	clock-frequency = <200000000>;
+	cap-mmc-highspeed;
+	sd-uhs-sdr104;
+	max-frequency = <200000000>;
+	vmmc-supply = <&vcc_3v3_s3>;
+	vqmmc-supply = <&vcc_1v8_s3>;
+	status = "okay";
+};
+
 &sfc {
 	pinctrl-names = "default";
 	pinctrl-0 = <&fspim0_pins>;
