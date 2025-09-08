@@ -139,8 +139,8 @@ static int sdhci_transfer_data(struct sdhci_host *host, struct mmc_data *data)
 	do {
 		stat = sdhci_readl(host, SDHCI_INT_STATUS);
 		if (stat & SDHCI_INT_ERROR) {
-			pr_debug("%s: Error detected in status(0x%X)!\n",
-				 __func__, stat);
+			printf("SDHCI: Transfer error detected - status=0x%08x, error=0x%08x\n",
+			       stat, stat & SDHCI_INT_ERROR);
 			return -EIO;
 		}
 		if (!transfer_done && (stat & rdy)) {
@@ -325,8 +325,11 @@ static int sdhci_send_command(struct mmc *mmc, struct mmc_cmd *cmd,
 	if ((stat & (SDHCI_INT_ERROR | mask)) == mask) {
 		sdhci_cmd_done(host, cmd);
 		sdhci_writel(host, mask, SDHCI_INT_STATUS);
-	} else
+	} else {
+		printf("SDHCI: Command failed - stat=0x%08x, mask=0x%08x, error=0x%08x\n",
+		       stat, mask, stat & SDHCI_INT_ERROR);
 		ret = -1;
+	}
 
 	if (!ret && data)
 		ret = sdhci_transfer_data(host, data);
