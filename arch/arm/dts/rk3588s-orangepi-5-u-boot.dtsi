@@ -44,7 +44,6 @@
 
 &sdhci { 
 	u-boot,dm-spl; 
-	/* Базовая конфигурация RK3588 */
 	bootph-pre-ram;
 	u-boot,spl-fifo-mode;
 };
