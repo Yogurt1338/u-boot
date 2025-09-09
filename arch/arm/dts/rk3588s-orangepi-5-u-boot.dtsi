@@ -44,15 +44,9 @@
 
 &sdhci { 
 	u-boot,dm-spl; 
-	/* Keep SPL in legacy HS to avoid sensitive voltage switching */
-	cap-mmc-highspeed;
-	non-removable;
-	disable-wp;
-	disable-cqe;
-	max-frequency = <52000000>;
-	mmc-hs200-1_8v;
-	mmc-hs400-1_8v;
-	bus-width = <8>;
+	/* Базовая конфигурация RK3588 */
+	bootph-pre-ram;
+	u-boot,spl-fifo-mode;
 };
 
 &i2c1 {
