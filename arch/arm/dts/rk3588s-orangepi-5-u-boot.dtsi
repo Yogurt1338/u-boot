@@ -43,9 +43,11 @@
 };
 
 &sdhci { 
+	cap-mmc-highspeed;
 	u-boot,dm-spl; 
 	bootph-pre-ram;
 	u-boot,spl-fifo-mode;
+	mmc-hs200-1_8v;
 };
 
 &i2c1 {
