@@ -254,21 +254,6 @@ static inline int write_env(struct mmc *mmc, unsigned long size,
 	return (n == blk_cnt) ? 0 : -1;
 }
 
-static void mmc_debug_info(struct mmc *mmc)
-{
-	printf("MMC Debug Info:\n");
-	printf("  Device: %d\n", mmc_get_blk_desc(mmc)->devnum);
-	printf("  Capacity: 0x%llx bytes\n", mmc->capacity);
-	printf("  Block size: %d\n", mmc->read_bl_len);
-	printf("  Write block size: %d\n", mmc->write_bl_len);
-	printf("  High capacity: %s\n", mmc->high_capacity ? "yes" : "no");
-	printf("  Bus width: %d\n", mmc->bus_width);
-	printf("  Clock: %d Hz\n", mmc->clock);
-	printf("  Selected mode: %d\n", mmc->selected_mode);
-	printf("  DDR mode: %s\n", mmc->ddr_mode ? "yes" : "no");
-	printf("  Hardware partition: %d\n", mmc_get_blk_desc(mmc)->hwpart);
-}
-
 static int env_mmc_save(void)
 {
 	ALLOC_CACHE_ALIGN_BUFFER(env_t, env_new, 1);
@@ -283,8 +268,6 @@ static int env_mmc_save(void)
 		printf("%s\n", errmsg);
 		return 1;
 	}
-
-	mmc_debug_info(mmc);
 
 	ret = env_export(env_new);
 	if (ret)
