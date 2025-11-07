@@ -1,0 +1,102 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+
+#include "rk3588s-u-boot.dtsi"
+
+/ {
+	chosen {
+		u-boot,spl-boot-order = &sdmmc, &sdhci;
+	};
+};
+
+/ {
+	aliases {
+		/* Note: These aliases are for SPL only.
+		 * mmc@fe2c0000: 0 (sdmmc/SD)
+		 * mmc@fe2e0000: 1 (sdhci/eMMC)
+		 */
+		mmc0 = &sdmmc; mmc1 = &sdhci;
+	};
+};
+
+&fspim0_pins {
+	bootph-all;
+};
+
+&sfc {
+	bootph-pre-ram;
+	u-boot,spl-sfc-no-dma;
+
+	flash@0 {
+		bootph-pre-ram;
+	};
+};
+
+/*
+ * In SPL, avoid 1.8V signaling switch on SDMMC to prevent
+ * "Card did not respond to voltage select!" timeouts when
+ * regulator switching isn't available that early. Fall back
+ * to SD High Speed (3.3V).
+ */
+&sdmmc {
+	no-1-8-v;
+	max-frequency = <50000000>;
+};
+
+&sdhci { 
+	cap-mmc-highspeed;
+	u-boot,dm-spl; 
+	bootph-pre-ram;
+	u-boot,spl-fifo-mode;
+	mmc-hs200-1_8v;
+};
+
+&i2c1 {
+	u-boot,dm-spl;
+};
+
+/* Ensure PMIC on SPI2 is visible to SPL so regulators are usable */
+&spi2 {
+	u-boot,dm-spl;
+	bootph-pre-ram;
+	status = "okay";
+
+	pmic@0 {
+		bootph-pre-ram;
+		u-boot,dm-spl;
+	};
+};
+
+&vcc_3v3_s3 {
+	u-boot,dm-spl;
+};
+
+&vcc_1v8_s3 {
+	u-boot,dm-spl;
+};
+
+&vcc_3v3_sd_s0 {
+	u-boot,dm-spl;
+	bootph-pre-ram;
+};
+
+&vccio_sd_s0 {
+	u-boot,dm-spl;
+	bootph-pre-ram;
+};
+
+&spi0 {
+	status = "disabled"; /* shrink SPL */
+};
+
+/* Make sure SPI2 and PMIC pin groups are included in SPL */
+&spi2m2_pins {
+	bootph-all;
+};
+
+&spi2m2_cs0 {
+	bootph-all;
+};
+
+&pmic_pins {
+	bootph-all;
+};
